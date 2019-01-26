@@ -1,4 +1,3 @@
-var loadTimes = 0,
 App = {
   web3Provider: null,
   contracts: {},
@@ -46,10 +45,8 @@ App = {
 			});
 		});
 	},
+
 	render: function() {
-		//alert("aaa");
-		//loadTimes++;
-		//alert(loadTimes);
 		var electionInstance;
 		var loader = $("#loader");
 		var content = $("#content");
@@ -57,7 +54,7 @@ App = {
 		loader.show();
 		content.hide();
 
-		  // Load account data
+		// Load account data
 		web3.eth.getCoinbase(function(err, account) {
 			if (err === null) {
 			  App.account = account;
@@ -75,36 +72,23 @@ App = {
 
 			var candidatesSelect = $('#candidatesSelect');
 			candidatesSelect.empty();
-			//alert(candidatesResults.data());
-			/*
-			if(isEmpty(candidatesResults.data()))
-			{
-				alert("empty");
-			}
-			else
-			{
-				alert("not empty");
-			}*/
 
-			//if(loadTimes==electionInstance.voteTotal){
 			for (var i = 1; i <= candidatesCount; i++) {
 			  	electionInstance.candidates(i).then(function(candidate) {
 					var id = candidate[0];
 					var name = candidate[1];
 					var voteCount = candidate[2];
-					if(loadTimes==electionInstance.voteTotal){
-						// Render candidate Result
-						var candidateTemplate = "<tr><th>" + id + "</th><td>" + name + "</td><td>" + voteCount + "</td></tr>"
-						candidatesResults.append(candidateTemplate);
+					//if(loadTimes==electionInstance.voteTotal){
+					// Render candidate Result
+					var candidateTemplate = "<tr><th>" + id + "</th><td>" + name + "</td><td>" + voteCount + "</td></tr>"
+					candidatesResults.append(candidateTemplate);
 
-						// Render candidate ballot option
-						var candidateOption = "<option value='" + id + "' >" + name + "</ option>"
-						candidatesSelect.append(candidateOption);
-					}
+					// Render candidate ballot option
+					var candidateOption = "<option value='" + id + "' >" + name + "</ option>"
+					candidatesSelect.append(candidateOption);
+					//}
 		  		});
 			}
-			//}
-
 			return electionInstance.voters(App.account);
 		}).then(function(hasVoted) {
 			// Do not allow a user to vote
@@ -117,6 +101,70 @@ App = {
 			console.warn(error);
 		});
 	},
+/*
+	render: function() {
+		var electionInstance;
+		var loader = $("#loader");
+		var content = $("#content");
+
+		loader.show();
+		content.hide();
+
+		// Load account data
+		web3.eth.getCoinbase(function(err, account) {
+			if (err === null) {
+				App.account = account;
+				$("#accountAddress").html("Your Account : " + account);
+			}
+		});
+
+		// Load contract data
+		App.contracts.Election.deployed().then(function (instance) {
+			electionInstance = instance;
+			return electionInstance.candidatesCount();
+		}).then(function (candidatesCount) {
+
+			// Store all promised to get candidate info
+			const promises = [];
+			for (var i = 1; i <= candidatesCount; i++) {
+				promises.push(electionInstance.candidates(i));
+			}
+
+			// Once all candidates are received, add to dom
+			Promise.all(promises).then((candidates) => {
+				var candidatesResults = $("#candidatesResults");
+				candidatesResults.empty();
+
+				var candidatesSelect = $('#candidatesSelect');
+				candidatesSelect.empty();
+
+				candidates.forEach(candidate => {
+					var id = candidate[0];
+				  	var name = candidate[1];
+				  	var voteCount = candidate[2];
+
+				  	// Render candidate Result
+				  	var candidateTemplate = "<tr><th>" + id + "</th><td>" + name + "</td><td>" + voteCount + "</td></tr>"
+				  	candidatesResults.append(candidateTemplate);
+
+				  	// Render candidate ballot option
+				  	var candidateOption = "<option value='" + id + "' >" + name + "</ option>"
+				  	candidatesSelect.append(candidateOption);          
+				})
+			});
+			return electionInstance.voters(App.account);
+		}).then(function(hasVoted) {
+			// Do not allow a user to vote
+			if(hasVoted) {
+			  $('form').hide();
+			}
+			loader.hide();
+			content.show();
+		}).catch(function(error) {
+			console.warn(error);
+		});
+	},*/
+
 	castVote: function() {
 		var candidateId = $('#candidatesSelect').val();
 		App.contracts.Election.deployed().then(function(instance) {

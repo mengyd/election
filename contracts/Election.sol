@@ -10,12 +10,12 @@ contract Election {
 	event votedEvent (
 		uint indexed _candidateId
 	);
-
+	//addr
 	mapping(uint => Candidate) public candidates;
 	mapping(address => bool) public voters;
 
 	uint public candidatesCount;
-	uint public voteTotal;
+	//uint public voteTotal;
 
 	constructor() public {
 		addCandidate("Candidate 1");
@@ -23,6 +23,7 @@ contract Election {
 	}
 
 	function addCandidate (string memory _name) private {
+		//vérifier doublons
 		candidatesCount ++;
 		candidates[candidatesCount] = Candidate(candidatesCount, _name, 0);
 	}
@@ -32,7 +33,7 @@ contract Election {
 		require(_candidateId > 0 && _candidateId <= candidatesCount);
 		voters[msg.sender] = true;
 		candidates[_candidateId].voteCount ++;
-		voteTotal++;
+		//voteTotal++;
 		emit votedEvent(_candidateId);
 	}
 
