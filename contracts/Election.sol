@@ -10,7 +10,7 @@ contract Election {
 	event votedEvent (
 		uint indexed _candidateId
 	);
-	//addr
+	
 	mapping(uint => Candidate) public candidates;
 	mapping(address => bool) public voters;
 
@@ -22,8 +22,17 @@ contract Election {
 		addCandidate("Candidate 2");
 	}
 
+	function compareString(string memory _s1, string memory _s2) public returns (bool) {
+		bytes memory s1 = bytes(_s1);
+		bytes memory s2 = bytes(_s2);
+		return keccak256(s1) == keccak256(s2);
+	}
+
 	function addCandidate (string memory _name) private {
 		//vérifier doublons
+		for(uint i=1; i<=candidatesCount; i++){
+			require(!compareString(string(candidates[i].name), _name));
+		}
 		candidatesCount ++;
 		candidates[candidatesCount] = Candidate(candidatesCount, _name, 0);
 	}
